@@ -120,10 +120,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         if (RUN_USING_ENCODER) {
-           // setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+           setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-     //   setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //TODO: I may actually not want to do the above comment out
 
 
