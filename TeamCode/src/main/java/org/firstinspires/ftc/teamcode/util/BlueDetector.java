@@ -71,8 +71,8 @@ public class BlueDetector extends OpMode {
 
            // Rect leftRect = new Rect(1, 1, 959, 1079);
           //  Rect rightRect = new Rect(960, 1, 959, 1079);
-            Rect leftRect = new Rect(100, 100, 500, 600);
-            Rect rightRect = new Rect(860, 100, 500, 600);
+            Rect leftRect = new Rect(200, 200, 500, 600);
+            Rect rightRect = new Rect(1160, 200, 500, 600);
 
             input.copyTo(outPut);
             Imgproc.rectangle(outPut, leftRect, rectColor, 20);
