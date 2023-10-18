@@ -18,7 +18,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 
 
 @Autonomous
-public class RedDetecter extends OpMode {
+public class BlueDetector extends OpMode {
 
 
     OpenCvWebcam webcam1 = null;
@@ -61,7 +61,7 @@ public class RedDetecter extends OpMode {
         double rightavgfin;
         Mat outPut = new Mat();
 
-        Scalar rectColor = new Scalar(0.0, 0.0, 255.0);
+        Scalar rectColor = new Scalar(255.0, 0.0, 0.0);
 
 
         @Override
@@ -69,8 +69,10 @@ public class RedDetecter extends OpMode {
             Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
             telemetry.addLine("pipeline running");
 
-            Rect leftRect = new Rect(1, 1, 959, 1079);
-            Rect rightRect = new Rect(960, 1, 959, 1079);
+           // Rect leftRect = new Rect(1, 1, 959, 1079);
+          //  Rect rightRect = new Rect(960, 1, 959, 1079);
+            Rect leftRect = new Rect(100, 100, 500, 600);
+            Rect rightRect = new Rect(860, 100, 500, 600);
 
             input.copyTo(outPut);
             Imgproc.rectangle(outPut, leftRect, rectColor, 20);
@@ -79,8 +81,8 @@ public class RedDetecter extends OpMode {
             leftCrop = YCbCr.submat(leftRect);
             rightCrop = YCbCr.submat(rightRect);
 
-            Core.extractChannel(leftCrop, leftCrop, 1);
-            Core.extractChannel(rightCrop, rightCrop, 1);
+            Core.extractChannel(leftCrop, leftCrop, 2);
+            Core.extractChannel(rightCrop, rightCrop, 2);
 
             Scalar leftavg = Core.mean(leftCrop);
             Scalar rightavg = Core.mean(rightCrop);
@@ -101,6 +103,8 @@ public class RedDetecter extends OpMode {
 
             else{
                 telemetry.addLine("C");
+                telemetry.addData("LeftValue", leftavgfin);
+                telemetry.addData("RightValue", rightavgfin);
             }
 
             return outPut;
