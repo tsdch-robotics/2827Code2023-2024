@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util;
 
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -15,11 +17,23 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+
 
 
 @Autonomous
 public class BlueDetector extends OpMode {
 
+
+    public static final int x1 = 300;
+    public static final int y1 = 300;
+    public static final int width1 = 400;
+    public static final int height1 = 600;
+
+    public static final int x2 = 1000;
+    public static final int y2 = 400;
+    public static final int width2 = 400;
+    public static final int height2 = 600;
 
     OpenCvWebcam webcam1 = null;
 
@@ -71,8 +85,8 @@ public class BlueDetector extends OpMode {
 
            // Rect leftRect = new Rect(1, 1, 959, 1079);
           //  Rect rightRect = new Rect(960, 1, 959, 1079);
-            Rect leftRect = new Rect(200, 200, 500, 600);
-            Rect rightRect = new Rect(1160, 200, 500, 600);
+            Rect leftRect = new Rect(x1, y1, width1 , height1);
+            Rect rightRect = new Rect(x2, y2, width2, height2);
 
             input.copyTo(outPut);
             Imgproc.rectangle(outPut, leftRect, rectColor, 20);

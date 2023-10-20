@@ -18,6 +18,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class DriveConstants {
 
+
+
     /*
      * These are motor constants that should be listed online for your motors.
      */
@@ -51,7 +53,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.88976; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 15.62 ;//14.51;//measured16.34; // in
+    public static double TRACK_WIDTH = 14.9;//(14.62 + 14.51 )/2 ;//14.51;//measured16.34; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -72,7 +74,7 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 50;
     public static double MAX_ACCEL = 52.48180821614297;
-    public static double MAX_ANG_VEL = Math.toRadians(187.78004637344503);
+    public static double MAX_ANG_VEL = Math.toRadians(237.5);
     public static double MAX_ANG_ACCEL = Math.toRadians(184.02607784577722);
 
     /*
