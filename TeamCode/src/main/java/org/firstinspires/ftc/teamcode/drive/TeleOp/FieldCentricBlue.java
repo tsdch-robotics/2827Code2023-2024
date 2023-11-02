@@ -7,18 +7,28 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
-@TeleOp(name = "FieldOrientedTest", group = "TeleOp")
-public class FieldCentric extends OpMode {
+@TeleOp(name = "BlueTeleOp", group = "TeleOp")
+public class FieldCentricBlue extends OpMode {
+
+    double rotate = 0;
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
     private DcMotor rearLeftMotor;
     private DcMotor rearRightMotor;
 
-    private double rotate = 0;
 
     private boolean gyroSquareRequested = false;
     private BNO055IMU imu; // Gyro sensor
     private boolean gyroResetRequested = false;
+
+    private double kp = 0.02; // Proportional gain (tune this value)
+    private double ki = 0.001; // Integral gain (tune this value)
+    private double kd = 0.001; // Derivative gain (tune this value)
+    private double integral = 0;
+    private double prevError = 0;
+    private boolean rotatingTo90 = false;
+    double setpoint  = 90;
+
     @Override
     public void init() {
         frontLeftMotor = hardwareMap.dcMotor.get("FL");
@@ -41,36 +51,78 @@ public class FieldCentric extends OpMode {
         BNO055IMU.Parameters imuParams = new BNO055IMU.Parameters();
         imuParams.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imuParams.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        //imuParams.LOGO_FACING_DIR, USB_FACING_DIR
         imuParams.calibrationDataFile = "BNO055IMUCalibration.json"; // Set this to your calibration file
         imuParams.loggingEnabled = true;
         imuParams.loggingTag = "IMU";
         imuParams.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(imuParams);
+      //  IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+      //          LOGO_FACING_DIR, USB_FACING_DIR));
+      //  imu.initialize(parameters);
     }
     @Override
     public void loop() {
-        // Get joystick inputs from the gamepad
-        double drive = -gamepad1.left_stick_y;
-        double strafe = gamepad1.left_stick_x;
-        if (!gamepad1.b){
-            rotate = gamepad1.right_stick_x;
+
+
+       /* if (gamepad1.left_bumper){
+            setpoint = 90;
         }
+        if (gamepad1.right_bumper){
+            setpoint = 45;
+        }*/
+
+        // Calculate the error (how far off the robot is from the setpoint)
+        double error = setpoint - getHeading();
+
+        // Update the integral term (helps eliminate steady-state error)
+        integral += error;
+
+        // Calculate the derivative term (helps reduce overshooting)
+        double derivative = error - prevError;
+
+        // Calculate the PID output (rotate)
+        // Check if the B button is pressed for rotating to 90 degrees
+        if (gamepad1.left_bumper && !rotatingTo90) {
+            setpoint = 90;
+            rotatingTo90 = true;
+            integral = 0; // Reset the integral term
+        }
+        if (gamepad1.right_bumper && !rotatingTo90) {
+            setpoint = 135;
+            rotatingTo90 = true;
+            integral = 0; // Reset the integral term
+        }
+
+        if (rotatingTo90) {
+            // Calculate the PID output (rotate)
+            rotate = kp * error + ki * integral + kd * derivative;
+
+            // Check if the robot is close enough to 90 degrees and stop
+            if (Math.abs(error) < 5) {
+                rotatingTo90 = false;
+                rotate = 0;
+            }
+        } else {
+            // Use right stick control when not rotating to 90 degrees
+            rotate = -gamepad1.right_stick_x;
+        }
+        // Update the previous error for the next iteration
+        prevError = error;
+
+        // Apply the PID output to the robot's rotation
+        // You may need to adjust the scaling factor to match your robot's behavior
+        rotate = Range.clip(rotate, -1.0, 1.0);
+
+
+        // Get joystick inputs from the gamepad
+        double drive = gamepad1.left_stick_y;
+        double strafe = -gamepad1.left_stick_x;
 
         // reset gyro button
         if (gamepad1.a) {
             gyroResetRequested = true;
-        }
-
-        if (gamepad1.b){
-            if (getHeading() < 90){
-                rotate = .5;
-                //break;
-            }
-            if (getHeading() > 90){
-                rotate = -.5;
-               // break;
-            }
         }
 
         // Perform gyro reset if requested
@@ -123,6 +175,7 @@ public class FieldCentric extends OpMode {
     private void resetGyro() {
         // Reset the gyro orientation to its initial state
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // Optional: Load a calibration file if available
