@@ -16,6 +16,8 @@ public class FieldCentricBlue extends OpMode {
     private DcMotor rearLeftMotor;
     private DcMotor rearRightMotor;
 
+    private DcMotor intake;
+
 
     private boolean gyroSquareRequested = false;
     private BNO055IMU imu; // Gyro sensor
@@ -35,7 +37,9 @@ public class FieldCentricBlue extends OpMode {
         frontRightMotor = hardwareMap.dcMotor.get("FR");
         rearLeftMotor = hardwareMap.dcMotor.get("BL");
         rearRightMotor = hardwareMap.dcMotor.get("BR");
+        intake = hardwareMap.dcMotor.get("intake");
 
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rearLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -66,6 +70,8 @@ public class FieldCentricBlue extends OpMode {
     public void loop() {
 
 
+        intake.setPower(gamepad1.left_trigger);
+
        /* if (gamepad1.left_bumper){
             setpoint = 90;
         }
@@ -74,7 +80,7 @@ public class FieldCentricBlue extends OpMode {
         }*/
 
         // Calculate the error (how far off the robot is from the setpoint)
-        double error = setpoint - getHeading();
+        double error = setpoint - getPitch();
 
         // Update the integral term (helps eliminate steady-state error)
         integral += error;
@@ -132,7 +138,7 @@ public class FieldCentricBlue extends OpMode {
         }
 
         // Get the robot's heading from the gyro sensor
-        double heading = getHeading();
+        double heading = getPitch();
         // Calculate the joystick inputs in the field-oriented frame of reference
         double fieldDrive = drive * Math.cos(Math.toRadians(heading)) - strafe * Math.sin(Math.toRadians(heading));
         double fieldStrafe = drive * Math.sin(Math.toRadians(heading)) + strafe * Math.cos(Math.toRadians(heading));
@@ -168,7 +174,7 @@ public class FieldCentricBlue extends OpMode {
 
     }
 
-    private double getHeading() {
+    private double getPitch() {
         // Get the robot's heading from the gyro sensor
         return imu.getAngularOrientation().firstAngle;
     }

@@ -73,24 +73,27 @@ public class Special extends OpMode {
 
 
         if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0) {
-            setpoint = 0;
+            setpoint = setpoint;
         }
-        else if (gamepad1.left_stick_x < 0 && gamepad1.left_stick_y == 0) {
+        else if (gamepad1.left_stick_x < -.7 && gamepad1.left_stick_y == 0) {
             setpoint = -90;
         }
-        else if (gamepad1.left_stick_x > 0 && gamepad1.left_stick_y == 0) {
+        else if (gamepad1.left_stick_x > .7 && gamepad1.left_stick_y == 0) {
             setpoint = 90;
         }
 
-        else if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y > 0) {
+        else if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y > .7) {
             setpoint = 0;
         }
-        else if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y < 0) {
+        else if (gamepad1.left_stick_x == 0 && gamepad1.left_stick_y < -.7) {
             setpoint = 0;
         }
 
-        else if (gamepad1.left_stick_x != 0 && gamepad1.left_stick_y != 0) {
+        else if (gamepad1.left_stick_x != 0 && gamepad1.left_stick_y != 0 && (Math.sqrt(Math.pow(gamepad1.left_stick_y, 2) + Math.pow(gamepad1.left_stick_x, 2))) >= .7) {
             setpoint = Math.toDegrees(Math.atan(gamepad1.left_stick_x / gamepad1.left_stick_y));
+        }
+        else{
+            setpoint = setpoint;
         }
 
        // setpoint = xcdfsg
@@ -98,7 +101,7 @@ public class Special extends OpMode {
         //double setpoint = 90; // The target heading (in degrees)
 
 // Calculate the error (how far off the robot is from the setpoint)
-        double error = setpoint - getHeading();
+        double error = setpoint - getPitch();
 
 // Update the integral term (helps eliminate steady-state error)
         integral += error;
@@ -133,7 +136,7 @@ public class Special extends OpMode {
         }
 
         // Get the robot's heading from the gyro sensor
-        double heading = getHeading();
+        double heading = getPitch();
         // Calculate the joystick inputs in the field-oriented frame of reference
         double fieldDrive = drive * Math.cos(Math.toRadians(heading)) - strafe * Math.sin(Math.toRadians(heading));
         double fieldStrafe = drive * Math.sin(Math.toRadians(heading)) + strafe * Math.cos(Math.toRadians(heading));
@@ -163,14 +166,14 @@ public class Special extends OpMode {
         //     telemetry.addData("Rear Right Power", rearRightPower);
         //telemetry.update();
 
-        // Update telemetry and control motors
+        // Update telemetry and control m otors
         telemetry.addData("Setpoint:", setpoint);
         telemetry.addData("Gyro Heading", heading);
         telemetry.update();
 
     }
 
-    private double getHeading() {
+    private double getPitch() {
         // Get the robot's heading from the gyro sensor
         return imu.getAngularOrientation().firstAngle;
     }
