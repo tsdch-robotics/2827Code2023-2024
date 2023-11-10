@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.util;
 
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
+import com.qualcomm.robotcore.hardware.DcMotor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -17,14 +16,18 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 
 
+public class Hardware{
 
-@Autonomous
-public class BlueDetector extends OpMode {
+    public DcMotor FL;
+    public DcMotor FR;
+    public DcMotor BL;
+    public DcMotor BR;
 
-
+    //public int pos1 = 1;
+    //public int position = 0;
+    //public int pos3 = 3;
     public static final int x1 = 300;
     public static final int y1 = 300;
     public static final int width1 = 400;
@@ -35,14 +38,29 @@ public class BlueDetector extends OpMode {
     public static final int width2 = 400;
     public static final int height2 = 600;
 
-    OpenCvWebcam webcam1 = null;
+    public OpenCvWebcam webcam1 = null;
 
-    @Override
+    Mat YCbCr = new Mat();
+    Mat leftCrop;
+    Mat rightCrop;
+    double leftavgfin;
+    double rightavgfin;
+    Mat outPut = new Mat();
+
+    Scalar rectColor = new Scalar(255.0, 0.0, 0.0);
+
+
     public void init(){
 
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+        // set motor directions
+        FL.setDirection(DcMotor.Direction.FORWARD);
+        FR.setDirection(DcMotor.Direction.REVERSE);
+        BL.setDirection(DcMotor.Direction.FORWARD);
+        BR.setDirection(DcMotor.Direction.REVERSE);
+
+     //   WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
+      //  int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+       // webcam1 = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
         webcam1.setPipeline(new examplePipeline());
 
@@ -60,28 +78,32 @@ public class BlueDetector extends OpMode {
 
 
     }
-    @Override
-    public void loop() {
 
+    private int zone = 0; // Variable to store the detected position
+
+    public int getPosition() {
+        return zone; // Getter method to retrieve the position value
     }
 
 
-    class examplePipeline extends OpenCvPipeline{
 
-        Mat YCbCr = new Mat();
+
+    public class examplePipeline extends OpenCvPipeline{
+
+     /*   Mat YCbCr = new Mat();
         Mat leftCrop;
         Mat rightCrop;
         double leftavgfin;
         double rightavgfin;
         Mat outPut = new Mat();
 
-        Scalar rectColor = new Scalar(255.0, 0.0, 0.0);
+        Scalar rectColor = new Scalar(255.0, 0.0, 0.0);*/
 
 
-        @Override
+
         public Mat processFrame(Mat input) {
             Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
-            telemetry.addLine("pipeline running");
+            //telemetry.addLine("pipeline running");
 
            // Rect leftRect = new Rect(1, 1, 959, 1079);
           //  Rect rightRect = new Rect(960, 1, 959, 1079);
@@ -105,20 +127,23 @@ public class BlueDetector extends OpMode {
             rightavgfin = rightavg.val[0];
 
             if (leftavgfin > rightavgfin && (Math.abs(leftavgfin-rightavgfin)) >= 1.5){
-                telemetry.addLine("A");
-                telemetry.addData("LeftValue", leftavgfin);
-                telemetry.addData("RightValue", rightavgfin);
+                zone = 1;
+               // telemetry.addLine("A");
+                //telemetry.addData("LeftValue", leftavgfin);
+               // telemetry.addData("RightValue", rightavgfin);
             }
             else if (rightavgfin > leftavgfin &&  (Math.abs(leftavgfin-rightavgfin)) >= 1.5){
-                telemetry.addLine("B");
-                telemetry.addData("LeftValue", leftavgfin);
-                telemetry.addData("RightValue", rightavgfin);
+                zone = 2;
+                //telemetry.addLine("B");
+               // telemetry.addData("LeftValue", leftavgfin);
+               // telemetry.addData("RightValue", rightavgfin);
             }
 
             else{
-                telemetry.addLine("C");
-                telemetry.addData("LeftValue", leftavgfin);
-                telemetry.addData("RightValue", rightavgfin);
+                zone = 3;
+              //  telemetry.addLine("C");
+              //  telemetry.addData("LeftValue", leftavgfin);
+               // telemetry.addData("RightValue", rightavgfin);
             }
 
             return outPut;
