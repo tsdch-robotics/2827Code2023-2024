@@ -70,7 +70,7 @@ public class FieldCentricBlue extends OpMode {
     public void loop() {
 
 
-        intake.setPower(gamepad1.left_trigger);
+        intake.setPower(-gamepad1.left_trigger);
 
        /* if (gamepad1.left_bumper){
             setpoint = 90;
@@ -79,7 +79,7 @@ public class FieldCentricBlue extends OpMode {
             setpoint = 45;
         }*/
 
-        // Calculate the error (how far off the robot is from the setpoint)
+         // Calculate the error (how far off the robot is from the setpoint)
         double error = setpoint - getPitch();
 
         // Update the integral term (helps eliminate steady-state error)

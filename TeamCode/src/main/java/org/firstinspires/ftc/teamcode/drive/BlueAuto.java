@@ -32,32 +32,53 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous(group = "drive")
 public class BlueAuto extends LinearOpMode {
 
-    OpenCvWebcam webcam1 = null;
+   /// OpenCvWebcam webcam1 = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Hardware sense = new Hardware();
+        // We want to start the bot at x: 10, y: -8, heading: 90 degrees
+        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
+
+        drive.setPoseEstimate(startPose);
+
 
         waitForStart();
+        Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(0, 10), Math.toRadians(0))
+                .splineTo(new Vector2d(5, 10), Math.toRadians(0))
+                .build();
+
+
+        if(isStopRequested()) return;
+
+        drive.followTrajectory(myTrajectory);
+
+     /*   Hardware sense = new Hardware();
+
+
 
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam1 = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
 
-        sense.init();
+
+
+
+
+      //  sense.init();
         // sense.
 
 
-        if (isStopRequested()) return;
+  //      if (isStopRequested()) return;
 
         sense.webcam1.setPipeline(sense.new examplePipeline());
 
         sense.webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                sense.webcam1.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT);
+                sense.webcam1.startStreaming(720, 720, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -69,7 +90,7 @@ public class BlueAuto extends LinearOpMode {
         int numReadings = 10;
         int totalPosition = 0;
 
-
+        waitForStart();
         for (int i = 0; i < numReadings; i++) {
             totalPosition += sense.getPosition();
             sleep(10); // Adjust the sleep time based on your needs
@@ -80,40 +101,9 @@ public class BlueAuto extends LinearOpMode {
 
         telemetry.addData("Average Position", roundedAverage);
         telemetry.update();
+*/
 
 
-
-
-
-
-
-
-        //begin movement
-        TrajectorySequence traj = drive.trajectoryBuilder(startPose)
-                .forward(DISTANCE)
-                .turn(Math.toRadians(90))
-                .forward(DISTANCE)
-                .turn(Math.toRadians(90))
-                .forward(DISTANCE)
-                .turn(Math.toRadians(90))
-                .forward(DISTANCE)
-                .turn(Math.toRadians(90))
-                .build();
-        drive.followTrajectorySequence(trajSeq);
-
-        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(30, 30), 0)
-                .build();
-
-        drive.followTrajectory(traj);
-
-        sleep(2000);
-
-        drive.followTrajectory(
-                drive.trajectoryBuilder(traj.end(), true)
-                        .splineTo(new Vector2d(0, 0), Math.toRadians(180))
-                        .build()
-        );
 
     }
 }
