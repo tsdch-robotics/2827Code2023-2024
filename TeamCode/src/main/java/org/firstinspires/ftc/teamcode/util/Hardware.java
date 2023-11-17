@@ -52,11 +52,7 @@ public class Hardware{
 
     public void init(){
 
-        // set motor directions
-        FL.setDirection(DcMotor.Direction.FORWARD);
-        FR.setDirection(DcMotor.Direction.REVERSE);
-        BL.setDirection(DcMotor.Direction.FORWARD);
-        BR.setDirection(DcMotor.Direction.REVERSE);
+
 
      //   WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
       //  int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());

@@ -22,12 +22,17 @@ public class RedDetecter extends OpMode {
 
 
     OpenCvWebcam webcam1 = null;
+    double totalLeftAvg = 0;
+    double totalRightAvg = 0;
+    int frameCount = 0;
+
 
     @Override
     public void init(){
 
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam1");
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hardwareMap.appContext.getResources()
+                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam1 = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
         webcam1.setPipeline(new examplePipeline());
