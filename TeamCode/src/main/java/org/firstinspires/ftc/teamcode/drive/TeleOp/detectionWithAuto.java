@@ -113,7 +113,7 @@ public class detectionWithAuto extends LinearOpMode {
         webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam1.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT);
+                webcam1.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
             }//TODO: adjust width and height baced on specific camera
 
             @Override
@@ -231,8 +231,8 @@ public class detectionWithAuto extends LinearOpMode {
         public Mat processFrame(Mat input) {
             Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
 
-            Rect leftRect = new Rect(1, 1, 959, 1079);
-            Rect rightRect = new Rect(960, 1, 959, 1079);
+            Rect leftRect = new Rect(1, 1, 400, 500);
+            Rect rightRect = new Rect(800, 1, 400, 500);//midile is 640
 
             input.copyTo(outPut);
             Imgproc.rectangle(outPut, leftRect, rectColor, 20);
