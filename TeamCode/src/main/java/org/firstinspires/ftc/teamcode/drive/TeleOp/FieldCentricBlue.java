@@ -70,7 +70,7 @@ public class FieldCentricBlue extends OpMode {
     public void loop() {
 
 
-        intake.setPower(-gamepad1.left_trigger);
+        intake.setPower(gamepad1.left_trigger);
 
        /* if (gamepad1.left_bumper){
             setpoint = 90;

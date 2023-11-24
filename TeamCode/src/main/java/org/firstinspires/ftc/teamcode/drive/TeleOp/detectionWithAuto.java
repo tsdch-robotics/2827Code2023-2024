@@ -159,11 +159,11 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.update();
 
             Trajectory traj1 = drive.trajectoryBuilder(startPose, true)
-                    .splineTo(new Vector2d(-20, 0), Math.toRadians(0))
+                    .splineTo(new Vector2d(20, 0), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(-20, 2), Math.toRadians(0))
+                    .splineTo(new Vector2d(20, -2), Math.toRadians(0))
                     .build();
 
             drive.followTrajectory(traj1);
@@ -177,11 +177,11 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.addData("Average Right Value", averageRight);
             telemetry.update();
             Trajectory traj1 = drive.trajectoryBuilder(startPose, true)
-                    .splineTo(new Vector2d(-15, 0), Math.toRadians(0))
+                    .splineTo(new Vector2d(15, 0), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(-20, 5), Math.toRadians(90))
+                    .splineTo(new Vector2d(20, 5), Math.toRadians(90))
                     .build();
 
             drive.followTrajectory(traj1);
@@ -192,11 +192,11 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.addLine("C");
             telemetry.update();
             Trajectory traj1 = drive.trajectoryBuilder(startPose, true)
-                    .splineTo(new Vector2d(-15, 0), Math.toRadians(0))
+                    .splineTo(new Vector2d(15, 0), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(-20, -5), Math.toRadians(90))
+                    .splineTo(new Vector2d(20, -5), Math.toRadians(90))
                     .build();
 
             drive.followTrajectory(traj1);
