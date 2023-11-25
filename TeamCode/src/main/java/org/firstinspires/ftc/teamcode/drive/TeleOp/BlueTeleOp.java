@@ -6,9 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "BlueTeleOp", group = "TeleOp")
-public class FieldCentricBlue extends OpMode {
+public class BlueTeleOp extends OpMode {
 
     double rotate = 0;
     private DcMotor frontLeftMotor;
@@ -16,8 +17,13 @@ public class FieldCentricBlue extends OpMode {
     private DcMotor rearLeftMotor;
     private DcMotor rearRightMotor;
 
+    private DcMotor slides;
+
     private DcMotor intake;
 
+
+    private Servo servo1;
+    private Servo servo2;
 
     private boolean gyroSquareRequested = false;
     private BNO055IMU imu; // Gyro sensor
@@ -31,13 +37,22 @@ public class FieldCentricBlue extends OpMode {
     private boolean rotatingTo90 = false;
     double setpoint  = 90;
 
+    int currentSlidesPosition;
+
     @Override
     public void init() {
+
+        servo1 = hardwareMap.servo.get("servo1");
+        servo2 = hardwareMap.servo.get("servo2");
+
         frontLeftMotor = hardwareMap.dcMotor.get("FL");
         frontRightMotor = hardwareMap.dcMotor.get("FR");
         rearLeftMotor = hardwareMap.dcMotor.get("BL");
         rearRightMotor = hardwareMap.dcMotor.get("BR");
         intake = hardwareMap.dcMotor.get("intake");
+        slides = hardwareMap.dcMotor.get("slides");
+        slides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -48,6 +63,7 @@ public class FieldCentricBlue extends OpMode {
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
 
@@ -70,7 +86,44 @@ public class FieldCentricBlue extends OpMode {
     public void loop() {
 
 
-        intake.setPower(gamepad1.left_trigger);
+        telemetry.addData("Position of slides", slides.getCurrentPosition());
+
+        if(gamepad1.b){
+            slides.setTargetPosition(0);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(1);
+        }
+        if(gamepad1.x){
+            slides.setTargetPosition(3250);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(1);
+        }
+
+        if(gamepad1.left_trigger < .5){
+            intake.setPower(gamepad1.right_trigger);
+        }
+        if(gamepad1.right_trigger < .5){
+            intake.setPower(-gamepad1.left_trigger);
+
+        }
+
+        if(gamepad1.dpad_up && slides.getCurrentPosition() < 3230){
+
+            currentSlidesPosition = slides.getCurrentPosition();
+            slides.setTargetPosition(currentSlidesPosition + 150);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(1);
+        }
+        if(gamepad1.dpad_down && slides.getCurrentPosition() > 9){
+
+            currentSlidesPosition = slides.getCurrentPosition();
+            slides.setTargetPosition(currentSlidesPosition - 150);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(-1);
+        }
+
+
+
 
        /* if (gamepad1.left_bumper){
             setpoint = 90;
