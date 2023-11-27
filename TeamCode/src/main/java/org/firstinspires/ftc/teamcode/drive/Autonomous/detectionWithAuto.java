@@ -77,6 +77,9 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
+import com.acmerobotics.dashboard.config.Config;
+
+
 @Autonomous(group = "drive")
 public class detectionWithAuto extends LinearOpMode {
     OpenCvWebcam webcam1 = null;
@@ -89,7 +92,8 @@ public class detectionWithAuto extends LinearOpMode {
     int zone = 0;
     ExamplePipeline examplePipeline;
 
-
+    public final int firstForward = 20;
+    public final int firstStrafe = 50;
 
 
     @Override
@@ -151,6 +155,11 @@ public class detectionWithAuto extends LinearOpMode {
         telemetry.addLine("Returning Values");
         telemetry.update();
         // Use the average values to determine autonomous steps
+
+
+
+
+
         if (left > right && (Math.abs(left - right)) >= 1.5) {
             zone = 1;
             telemetry.addData("Zone", zone);
@@ -158,12 +167,12 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.addData("Average Right Value", averageRight);
             telemetry.update();
 
-            Trajectory traj1 = drive.trajectoryBuilder(startPose, true)
-                    .splineTo(new Vector2d(20, 0), Math.toRadians(0))
+            Trajectory traj1 = drive.trajectoryBuilder(startPose)
+                    .splineTo(new Vector2d(24, -2), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(20, -2), Math.toRadians(0))
+                    .splineTo(new Vector2d(20, -50), Math.toRadians(-90))
                     .build();
 
             drive.followTrajectory(traj1);
@@ -176,12 +185,12 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.addData("Average Left Value", averageLeft);
             telemetry.addData("Average Right Value", averageRight);
             telemetry.update();
-            Trajectory traj1 = drive.trajectoryBuilder(startPose, true)
-                    .splineTo(new Vector2d(15, 0), Math.toRadians(0))
+            Trajectory traj1 = drive.trajectoryBuilder(startPose)
+                    .splineTo(new Vector2d(24, -2), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(20, 5), Math.toRadians(90))
+                    .splineTo(new Vector2d(20, -50), Math.toRadians(-90))
                     .build();
 
             drive.followTrajectory(traj1);
@@ -191,12 +200,12 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.addData("Zone", zone);
             telemetry.addLine("C");
             telemetry.update();
-            Trajectory traj1 = drive.trajectoryBuilder(startPose, true)
-                    .splineTo(new Vector2d(15, 0), Math.toRadians(0))
+            Trajectory traj1 = drive.trajectoryBuilder(startPose)
+                    .splineTo(new Vector2d(firstForward, 2), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(20, -5), Math.toRadians(90))
+                    .splineTo(new Vector2d(firstForward, firstStrafe), Math.toRadians(-90))
                     .build();
 
             drive.followTrajectory(traj1);
@@ -207,6 +216,25 @@ public class detectionWithAuto extends LinearOpMode {
 
 
         sleep(4000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

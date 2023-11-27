@@ -88,16 +88,7 @@ public class BlueTeleOp extends OpMode {
 
         telemetry.addData("Position of slides", slides.getCurrentPosition());
 
-        if(gamepad1.b){
-            slides.setTargetPosition(0);
-            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            slides.setPower(1);
-        }
-        if(gamepad1.x){
-            slides.setTargetPosition(3250);
-            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            slides.setPower(1);
-        }
+
 
         if(gamepad1.left_trigger < .5){
             intake.setPower(gamepad1.right_trigger);
@@ -107,19 +98,43 @@ public class BlueTeleOp extends OpMode {
 
         }
 
-        if(gamepad1.dpad_up && slides.getCurrentPosition() < 3230){
+        if(gamepad1.dpad_up && slides.getCurrentPosition() < 3000){
 
             currentSlidesPosition = slides.getCurrentPosition();
-            slides.setTargetPosition(currentSlidesPosition + 150);
+            slides.setTargetPosition(currentSlidesPosition + 200);
             slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slides.setPower(1);
         }
-        if(gamepad1.dpad_down && slides.getCurrentPosition() > 9){
+        if(gamepad1.dpad_down && slides.getCurrentPosition() > 0){
 
-            currentSlidesPosition = slides.getCurrentPosition();
-            slides.setTargetPosition(currentSlidesPosition - 150);
+
+            slides.setTargetPosition(currentSlidesPosition - 200);
             slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            slides.setPower(-1);
+            slides.setPower(1);
+        }
+
+
+
+
+        if(gamepad1.a){
+            slides.setTargetPosition(0);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(1);
+        }
+        if(gamepad1.x){
+            slides.setTargetPosition(1000);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(1);
+        }
+        if(gamepad1.y){
+            slides.setTargetPosition(2300);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(1);
+        }
+        if(gamepad1.b){
+            slides.setTargetPosition(3900);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(1);
         }
 
 
@@ -141,6 +156,14 @@ public class BlueTeleOp extends OpMode {
         // Calculate the derivative term (helps reduce overshooting)
         double derivative = error - prevError;
 
+
+
+
+
+
+
+
+
         // Calculate the PID output (rotate)
         // Check if the B button is pressed for rotating to 90 degrees
         if (gamepad1.left_bumper && !rotatingTo90) {
@@ -153,6 +176,10 @@ public class BlueTeleOp extends OpMode {
             rotatingTo90 = true;
             integral = 0; // Reset the integral term
         }
+
+
+
+
 
         if (rotatingTo90) {
             // Calculate the PID output (rotate)
@@ -179,10 +206,20 @@ public class BlueTeleOp extends OpMode {
         double drive = gamepad1.left_stick_y;
         double strafe = -gamepad1.left_stick_x;
 
-        // reset gyro button
-        if (gamepad1.a) {
-            gyroResetRequested = true;
+
+        if(gamepad1.dpad_left){
+            strafe = .75;
         }
+        if(gamepad1.dpad_right){
+            strafe = -.75;
+        }
+
+        // reset gyro button
+   /*     if (gamepad1.a) {
+            gyroResetRequested = true;
+        }*/
+
+        //TODO: update gyro reset?
 
         // Perform gyro reset if requested
         if (gyroResetRequested) {
