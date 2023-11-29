@@ -36,6 +36,8 @@ public class ZeroServos extends LinearOpMode {
 
     private Servo servo1;
     private Servo servo2;
+    private Servo servo3;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,15 +45,18 @@ public class ZeroServos extends LinearOpMode {
 
         servo1 = hardwareMap.servo.get("servo1");
         servo2 = hardwareMap.servo.get("servo2");
+        servo3 = hardwareMap.servo.get("servo3");
 
         waitForStart();
 
-        servo1.setPosition(0);
+        servo1.setPosition(1);
         servo2.setPosition(1);
+        servo3.setPosition(1);
         sleep(2000);
 
-        servo1.setPosition(1);
+        servo1.setPosition(0);
         servo2.setPosition(0);
+        servo3.setPosition(0);
         sleep(5000);
 
 //L = 0

@@ -78,6 +78,8 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.firstMove;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.firstStrafe;
 
 
 @Autonomous(group = "drive")
@@ -91,9 +93,10 @@ public class detectionWithAuto extends LinearOpMode {
     int frameCount = 0;
     int zone = 0;
     ExamplePipeline examplePipeline;
+    private DcMotor slides;
 
-    public final int firstForward = 20;
-    public final int firstStrafe = 50;
+   // public final int firstForward = 20;
+    //public final int firstStrafe = -50;
 
 
     @Override
@@ -110,6 +113,11 @@ public class detectionWithAuto extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam1 = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+
+
+        slides = hardwareMap.dcMotor.get("slides");
+        slides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         examplePipeline = new ExamplePipeline();
         webcam1.setPipeline(examplePipeline);
@@ -168,11 +176,11 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.update();
 
             Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                    .splineTo(new Vector2d(24, -2), Math.toRadians(0))
+                    .splineTo(new Vector2d(15, -2), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(20, -50), Math.toRadians(-90))
+                    .splineTo(new Vector2d(25, 80), Math.toRadians(0))
                     .build();
 
             drive.followTrajectory(traj1);
@@ -186,11 +194,13 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.addData("Average Right Value", averageRight);
             telemetry.update();
             Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                    .splineTo(new Vector2d(24, -2), Math.toRadians(0))
+                    .forward(25)
+                    //.splineTo(new Vector2d(15, 0), Math.toRadians(0))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(20, -50), Math.toRadians(-90))
+                    .strafeLeft(90)
+                 //   .splineTo(new Vector2d(25, 80), Math.toRadians(0))
                     .build();
 
             drive.followTrajectory(traj1);
@@ -201,15 +211,28 @@ public class detectionWithAuto extends LinearOpMode {
             telemetry.addLine("C");
             telemetry.update();
             Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                    .splineTo(new Vector2d(firstForward, 2), Math.toRadians(0))
+                   // .forward(25)
+                    .splineTo(new Vector2d(25, -1), Math.toRadians(90))
                     .build();
 
             Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                    .splineTo(new Vector2d(firstForward, firstStrafe), Math.toRadians(-90))
+
+                    .forward(40)
+                  //  .splineTo(new Vector2d(30, 80), Math.toRadians(0))
+                    .build();
+
+            Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+
+                    .forward(40)
+                    //  .splineTo(new Vector2d(30, 80), Math.toRadians(0))
                     .build();
 
             drive.followTrajectory(traj1);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setTargetPosition(600);
+            slides.setPower(1);
             drive.followTrajectory(traj2);
+            drive.followTrajectory(traj3);
             // Add your autonomous steps for condition C
         }
 
